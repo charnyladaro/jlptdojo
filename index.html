@@ -42,6 +42,21 @@ h1 span{color:var(--n5)}
 .feat p{color:var(--muted);font-size:.95rem}
 .cta{text-align:center;padding:clamp(40px,8vw,88px) 16px;border-top:1px solid var(--line)}
 .cta h2{font-size:clamp(1.5rem,4vw,2.4rem);margin-bottom:20px}
+.shots{padding:clamp(32px,6vw,72px) 0;text-align:center}
+.shots h2{font-size:clamp(1.5rem,4vw,2.4rem);margin-bottom:6px}
+.shots>p{color:var(--muted);margin-bottom:28px}
+.carousel{position:relative}
+.track{display:flex;gap:clamp(16px,3vw,28px);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:12px max(16px,calc(50% - 130px));scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.phone{flex:0 0 clamp(200px,60vw,260px);scroll-snap-align:center;aspect-ratio:9/16;background:#111;border-radius:30px;padding:8px;box-shadow:0 20px 40px rgba(0,0,0,.18)}
+.phone .scr{width:100%;height:100%;border-radius:22px;overflow:hidden;background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.9rem}
+.phone img{width:100%;height:100%;object-fit:cover}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:1.4rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.nav.prev{left:0}.nav.next{right:0}
+@media (max-width:600px){.nav{display:none}}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:18px}
+.dots button{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer}
+.dots button.on{background:var(--n5);width:24px;border-radius:5px}
 footer{text-align:center;color:var(--muted);font-size:.85rem;padding:24px 16px 40px}
 footer a{color:inherit}
 </style>
@@ -70,6 +85,17 @@ footer a{color:inherit}
     </div>
   </section>
 
+  <section class="shots" id="screens">
+    <h2>See it in action</h2>
+    <p>Swipe through the app</p>
+    <div class="carousel">
+      <button class="nav prev" aria-label="Previous">‹</button>
+      <div class="track"><div class="phone"><div class="scr"><img src="screens/01-home.png" alt="Home screen" loading="lazy" onerror="this.replaceWith('Screenshot 1')"></div></div><div class="phone"><div class="scr"><img src="screens/02-kana.png" alt="Kana screen" loading="lazy" onerror="this.replaceWith('Screenshot 2')"></div></div><div class="phone"><div class="scr"><img src="screens/03-kana-writing.png" alt="Kana writing screen" loading="lazy" onerror="this.replaceWith('Screenshot 3')"></div></div><div class="phone"><div class="scr"><img src="screens/04-grammar.png" alt="Grammar screen" loading="lazy" onerror="this.replaceWith('Screenshot 4')"></div></div><div class="phone"><div class="scr"><img src="screens/05-flashcards.png" alt="Flashcards screen" loading="lazy" onerror="this.replaceWith('Screenshot 5')"></div></div><div class="phone"><div class="scr"><img src="screens/06-mock-exam.png" alt="Mock exam screen" loading="lazy" onerror="this.replaceWith('Screenshot 6')"></div></div></div>
+      <button class="nav next" aria-label="Next">›</button>
+    </div>
+    <div class="dots"></div>
+  </section>
+
   <section class="features">
     <div class="feat"><b>📚</b><h3>Lessons &amp; Grammar</h3><p>Structured lessons and grammar points for N5 through N1.</p></div>
     <div class="feat"><b>🈁</b><h3>Vocabulary</h3><p>Build your word bank level by level with practice drills.</p></div>
@@ -90,5 +116,17 @@ footer a{color:inherit}
 </section>
 
 <footer>© 2026 Charnyl Adaro · <a href="../privacy-policy.html">Privacy Policy</a> · Not affiliated with JLPT or the Japan Foundation.</footer>
+<script>
+(()=>{const t=document.querySelector('.track'),ph=[...t.children],d=document.querySelector('.dots');
+ph.forEach((p,i)=>{const b=document.createElement('button');b.ariaLabel='Screen '+(i+1);b.onclick=()=>go(i);d.append(b)});
+const cur=()=>{const c=t.scrollLeft+t.clientWidth/2;let best=0,m=1e9;ph.forEach((p,i)=>{const x=Math.abs(p.offsetLeft+p.offsetWidth/2-c);if(x<m){m=x;best=i}});return best};
+const go=i=>{i=(i+ph.length)%ph.length;const p=ph[i];t.scrollTo({left:p.offsetLeft-(t.clientWidth-p.offsetWidth)/2})};
+const mark=()=>[...d.children].forEach((b,i)=>b.classList.toggle('on',i===cur()));
+t.addEventListener('scroll',()=>requestAnimationFrame(mark));mark();
+document.querySelector('.prev').onclick=()=>go(cur()-1);document.querySelector('.next').onclick=()=>go(cur()+1);
+let timer=setInterval(()=>go(cur()+1),4000);const stop=()=>clearInterval(timer);
+['pointerdown','touchstart','wheel'].forEach(e=>t.addEventListener(e,stop,{passive:true}));document.querySelectorAll('.nav').forEach(b=>b.addEventListener('click',stop));
+})();
+</script>
 </body>
 </html>
